@@ -1,9 +1,8 @@
 'use strict'
 
-
 const Project = use('App/Models/Project');
-
 const AuthorizationService = use('App/Services/AuthorizationService');
+
 
 class ProjectController {
 
@@ -33,6 +32,21 @@ class ProjectController {
       return project;
 
   }
+
+  async  update( { auth , request, params } ) {
+    const user = await auth.getUser()
+    const { id } = params
+    const project = await Project.find(id);
+    AuthorizationService.verifyPermission(project, user)
+    const { title, description } = request.all();
+    const projectUpdated = {
+      title ,
+      description
+  }
+    project.merge(projectUpdated);
+    await project.save();
+    return project;
+}
 }
 
-module.exports = ProjectController
+module.exports = ProjectController;
