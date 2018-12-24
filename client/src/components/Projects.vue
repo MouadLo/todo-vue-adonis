@@ -12,6 +12,7 @@
               project,
               title: $event,
           })"
+          @onClick="projectClicked(project)"
           @onEdit="setEditMode(project)"
           @onSave="saveProject(project)"
           @onDelete="deleteProject(project)"
@@ -23,8 +24,6 @@
        :value="newProjectName"
        @create="createProjects"
        />
-      <h1>testing</h1>
-
   </Panel>
 </template>
 
@@ -49,16 +48,24 @@ export default {
     ]),
   },
   methods: {
+    projectClicked(project) {
+        this.setCurrentProject(project);
+        this.fetchTasksForProject(project);
+    },
     ...mapMutations('projects', [
       'setNewProjectName',
       'setEditMode',
       'setProjectTitle',
+      'setCurrentProject',
     ]),
     ...mapActions('projects' , [
       'createProjects',
       'fetchProjects',
       'saveProject',
       'deleteProject',
+    ]),
+     ...mapActions('tasks' , [
+      'fetchTasksForProject',
     ]),
   },
 };
